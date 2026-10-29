@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copy Code</title>
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #121212;
+}
+button {
+    width: 100px;
+    height: 100px;
+    border: none;
+    border-radius: 50%;
+    background: #00ff99;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+svg {
+    width: 48px;
+    height: 48px;
+}
+#message {
+    position: fixed;
+    bottom: 25px;
+    color: #00ff99;
+    font: 16px Arial;
+    opacity: 0;
+}
+#message.show { opacity: 1; }
+</style>
+</head>
+<body>
+<button id="copyButton" aria-label="Copy code">
+<svg viewBox="0 0 24 24" fill="none"
+stroke="black" stroke-width="2"
+stroke-linecap="round" stroke-linejoin="round">
+<rect x="8" y="8" width="13" height="13" rx="2"/>
+<path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>
+</svg>
+</button>
+<div id="message">Copied successfully!</div>
+<script>
+const codeToCopy = `import 'package:flutter/material.dart';
+void main() => runApp(MaterialApp(
+  home: Scaffold(
+    appBar: AppBar(title: Text("Profile App")),
+    body: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ProfileCard(),
+          ElevatedButton(
+            onPressed: () => print("Follow clicked"),
+            child: Text("Follow"),
+          ),
+        ],
+      ),
+    ),
+  ),
+));
+class ProfileCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        leading: Icon(Icons.person),
+        title: Text("Komali"),
+        subtitle: Text("komali@example.com"),
+      ),
+    );
+  }
+}`;
+document.getElementById("copyButton").onclick = async () => {
+    const msg = document.getElementById("message");
+    try {
+        await navigator.clipboard.writeText(codeToCopy);
+    } catch (e) {
+        const area = document.createElement("textarea");
+        area.value = codeToCopy;
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        const success = document.execCommand("copy");
+        area.remove();
+        if (!success) {
+            msg.textContent = "Copy failed. Try the HTTPS webpage.";
+            msg.classList.add("show");
+            return;
+        }
+    }
+    msg.classList.add("show");
+    setTimeout(() => msg.classList.remove("show"), 1500);
+};
+</script>
+</body>
+</html>
